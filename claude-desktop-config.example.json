@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "prow": {
+      "command": "node",
+      "args": [
+        "/absolute/path/to/prow-mcp/dist/index.js",
+        "--url",
+        "https://your-prow-instance.example.com"
+      ]
+    }
+  }
+}

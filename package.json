@@ -1,0 +1,51 @@
+{
+  "name": "prow-mcp",
+  "version": "0.1.0",
+  "description": "Model Context Protocol server for Prow CI/CD integration",
+  "main": "dist/index.js",
+  "type": "module",
+  "bin": {
+    "prow-mcp": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/index.ts",
+    "start": "node dist/index.js",
+    "watch": "tsx watch src/index.ts",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "prow",
+    "ci",
+    "cd",
+    "kubernetes",
+    "testing",
+    "claude",
+    "ai"
+  ],
+  "author": "Garrick Dabbs",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/garrickdabbs/prow-mcp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/garrickdabbs/prow-mcp/issues"
+  },
+  "homepage": "https://github.com/garrickdabbs/prow-mcp#readme",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.27.0",
+    "axios": "^1.15.0",
+    "zod": "^4.3.5"
+  },
+  "devDependencies": {
+    "@types/node": "^25.0.2",
+    "tsx": "^4.6.0",
+    "typescript": "^6.0.2"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

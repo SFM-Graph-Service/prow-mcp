@@ -1,0 +1,15 @@
+src/
+tsconfig.json
+.env
+.env.example
+*.log
+.DS_Store
+node_modules/
+.vscode/
+.idea/
+*.test.ts
+*.spec.ts
+coverage/
+.github/
+USAGE.md
+claude-desktop-config.example.json
