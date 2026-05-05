@@ -36,13 +36,9 @@ export PROW_URL="https://your-prow-instance.example.com"
 prow-mcp --url https://your-prow-instance.example.com
 ```
 
-### Usage with Claude Desktop
+### Usage with Claude Code (CLI)
 
-Add to your Claude Desktop configuration file:
-
-**macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`  
-**Windows**: `%APPDATA%\Claude\claude_desktop_config.json`  
-**Linux**: `~/.config/Claude/claude_desktop_config.json`
+Add to your MCP configuration file at `~/.claude/mcp.json`:
 
 ```json
 {
@@ -60,6 +56,18 @@ Add to your Claude Desktop configuration file:
 ```
 
 **Note**: Replace `/absolute/path/to/prow-mcp` with the actual path to your installation.
+
+After adding the configuration, restart Claude Code or start a new session.
+
+### Usage with Claude Desktop (GUI App)
+
+Add to your Claude Desktop configuration file:
+
+**macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`  
+**Windows**: `%APPDATA%\Claude\claude_desktop_config.json`  
+**Linux**: `~/.config/Claude/claude_desktop_config.json`
+
+Use the same JSON configuration as shown above for Claude Code.
 
 After adding the configuration, restart Claude Desktop.
 
