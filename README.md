@@ -6,9 +6,12 @@ A Model Context Protocol (MCP) server that enables AI assistants like Claude to 
 
 - 📋 **List Jobs** - Discover all available Prow jobs in your instance
 - 📊 **Job History** - Get recent run history with status, timing, and URLs
+- 🕒 **Historical Data** - Access unlimited job history via GCS bucket (not limited to 48 hours)
 - 🔍 **Detailed Info** - View comprehensive job run details including refs, labels, and timing
-- 📝 **Log Retrieval** - Fetch build logs for specific job runs
+- 📝 **Efficient Log Streaming** - Fetch logs with byte-range support for large files
 - 📈 **Failure Analysis** - Identify common failure patterns and calculate success rates
+- ⚙️ **Job Configuration** - Parse and view job configs from openshift/release repository
+- 📦 **Artifact Management** - List and retrieve build artifacts (JUnit XML, pod info, etc.)
 
 ## Quick Start
 
@@ -84,13 +87,25 @@ npm test
 
 ## Available Tools
 
+### Core Tools
+
 | Tool | Description |
 |------|-------------|
 | `prow_list_jobs` | List all Prow job names with optional filtering |
-| `prow_get_job_runs` | Get recent run history for a specific job |
+| `prow_get_job_runs` | Get recent run history (48h window from API) |
 | `prow_get_job_details` | Get detailed information about a job run |
 | `prow_get_logs` | Fetch build logs for a specific job run |
 | `prow_analyze_failures` | Analyze failure patterns and calculate success rates |
+
+### Historical Data & Advanced Tools
+
+| Tool | Description |
+|------|-------------|
+| `prow_get_historical_runs` | Access unlimited job history from GCS bucket |
+| `prow_get_job_config` | View job configuration and cron schedules |
+| `prow_stream_logs` | Efficiently stream logs with byte-range support and tail |
+| `prow_list_artifacts` | List all artifacts for a specific build |
+| `prow_get_artifact` | Fetch specific artifacts (JUnit XML, pod info, etc.) |
 
 See [USAGE.md](USAGE.md) for detailed usage examples and common workflows.
 
