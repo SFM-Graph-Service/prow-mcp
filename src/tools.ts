@@ -397,7 +397,7 @@ async function streamLogsHandler(params: unknown): Promise<ToolResponse> {
     const logSize = await gcs.getLogSize(input.jobName, input.buildId);
 
     let startByte = input.startByte;
-    let endByte = input.endByte;
+    const endByte = input.endByte;
 
     // Handle tail lines request
     if (input.tailLines && !startByte && !endByte) {

@@ -29,7 +29,7 @@ export class ProwClient {
       return response.data.items || [];
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        throw new Error(`Failed to fetch Prow jobs: ${error.message}`);
+        throw new Error(`Failed to fetch Prow jobs: ${error.message}`, { cause: error });
       }
       throw error;
     }
@@ -98,7 +98,7 @@ export class ProwClient {
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        throw new Error(`Failed to fetch logs: ${error.message}. URL: ${job.status.url}`);
+        throw new Error(`Failed to fetch logs: ${error.message}. URL: ${job.status.url}`, { cause: error });
       }
       throw error;
     }
@@ -113,7 +113,7 @@ export class ProwClient {
 
     const patterns = new Map<string, { count: number; examples: string[] }>();
     let totalRuns = 0;
-    let failedRuns = jobs.length;
+    const failedRuns = jobs.length;
 
     // If we need to calculate success rate, we need all recent runs
     if (options?.days) {
