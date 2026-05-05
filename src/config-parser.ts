@@ -92,7 +92,7 @@ export class ProwConfigParser {
       return await this.searchJobConfigViaAPI(jobName);
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        throw new Error(`Failed to find job config: ${error.message}`);
+        throw new Error(`Failed to find job config: ${error.message}`, { cause: error });
       }
       throw error;
     }
@@ -117,7 +117,7 @@ export class ProwConfigParser {
       }
 
       return null;
-    } catch (error) {
+    } catch (_error) {
       // File not found or other error - return null to try other paths
       return null;
     }
@@ -154,7 +154,7 @@ export class ProwConfigParser {
       }
 
       return null;
-    } catch (error) {
+    } catch (_error) {
       return null;
     }
   }

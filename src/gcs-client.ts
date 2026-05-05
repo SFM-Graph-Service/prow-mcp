@@ -84,7 +84,7 @@ export class GCSClient {
       return { buildIds, nextMarker };
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        throw new Error(`Failed to list builds for ${jobName}: ${error.message}`);
+        throw new Error(`Failed to list builds for ${jobName}: ${error.message}`, { cause: error });
       }
       throw error;
     }
@@ -131,7 +131,7 @@ export class GCSClient {
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        throw new Error(`Failed to fetch prowjob.json for ${buildId}: ${error.message}`);
+        throw new Error(`Failed to fetch prowjob.json for ${buildId}: ${error.message}`, { cause: error });
       }
       throw error;
     }
@@ -148,7 +148,7 @@ export class GCSClient {
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        throw new Error(`Failed to fetch started.json for ${buildId}: ${error.message}`);
+        throw new Error(`Failed to fetch started.json for ${buildId}: ${error.message}`, { cause: error });
       }
       throw error;
     }
@@ -165,7 +165,7 @@ export class GCSClient {
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        throw new Error(`Failed to fetch finished.json for ${buildId}: ${error.message}`);
+        throw new Error(`Failed to fetch finished.json for ${buildId}: ${error.message}`, { cause: error });
       }
       throw error;
     }
@@ -240,7 +240,7 @@ export class GCSClient {
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        throw new Error(`Failed to fetch logs for ${buildId}: ${error.message}`);
+        throw new Error(`Failed to fetch logs for ${buildId}: ${error.message}`, { cause: error });
       }
       throw error;
     }
@@ -258,7 +258,7 @@ export class GCSClient {
       return contentLength ? parseInt(String(contentLength), 10) : 0;
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        throw new Error(`Failed to get log size for ${buildId}: ${error.message}`);
+        throw new Error(`Failed to get log size for ${buildId}: ${error.message}`, { cause: error });
       }
       throw error;
     }
@@ -278,7 +278,7 @@ export class GCSClient {
       return this.parseObjects(response.data);
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        throw new Error(`Failed to list artifacts for ${buildId}: ${error.message}`);
+        throw new Error(`Failed to list artifacts for ${buildId}: ${error.message}`, { cause: error });
       }
       throw error;
     }
@@ -316,7 +316,7 @@ export class GCSClient {
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        throw new Error(`Failed to fetch artifact ${artifactPath}: ${error.message}`);
+        throw new Error(`Failed to fetch artifact ${artifactPath}: ${error.message}`, { cause: error });
       }
       throw error;
     }
