@@ -123,3 +123,13 @@ export interface FailureAnalysis {
     to: string;
   };
 }
+
+// Job History Types (from GCS Web Client)
+export interface JobHistoryRun {
+  spyglassLink: string;
+  id: string;
+  started: string;
+  duration: number;
+  result: string;
+  refs: unknown;
+}

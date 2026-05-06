@@ -1,6 +1,6 @@
 {
   "name": "prow-mcp",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Model Context Protocol server for Prow CI/CD integration with historical data access",
   "main": "dist/index.js",
   "type": "module",

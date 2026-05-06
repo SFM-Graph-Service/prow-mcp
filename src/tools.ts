@@ -6,10 +6,12 @@ import { z } from 'zod';
 import type { MCPTool, ToolResponse } from './types.js';
 import { ProwClient } from './prow-client.js';
 import { GCSClient } from './gcs-client.js';
+import { GCSWebClient } from './gcs-web-client.js';
 import { ProwConfigParser } from './config-parser.js';
 
 let prowClient: ProwClient | null = null;
 let gcsClient: GCSClient | null = null;
+let gcsWebClient: GCSWebClient | null = null;
 let configParser: ProwConfigParser | null = null;
 
 export function initializeProwClient(url: string): void {
@@ -19,6 +21,9 @@ export function initializeProwClient(url: string): void {
   gcsClient = new GCSClient({
     bucketName: 'test-platform-results',
   });
+
+  // Initialize GCS web client for job history page parsing
+  gcsWebClient = new GCSWebClient();
 
   // Initialize config parser
   configParser = new ProwConfigParser();
@@ -36,6 +41,13 @@ function getGCSClient(): GCSClient {
     throw new Error('GCS client not initialized.');
   }
   return gcsClient;
+}
+
+function getGCSWebClient(): GCSWebClient {
+  if (!gcsWebClient) {
+    throw new Error('GCS web client not initialized.');
+  }
+  return gcsWebClient;
 }
 
 function getConfigParser(): ProwConfigParser {
@@ -99,6 +111,11 @@ const getArtifactSchema = z.object({
   jobName: z.string().min(1).describe('Name of the Prow job'),
   buildId: z.string().min(1).describe('Specific build ID'),
   artifactPath: z.string().min(1).describe('Path to artifact relative to build directory'),
+});
+
+const parseJobHistoryPageSchema = z.object({
+  jobName: z.string().min(1).describe('Name of the Prow job'),
+  maxResults: z.number().int().positive().optional().default(20).describe('Maximum number of runs to return from job history page (default: 20)'),
 });
 
 // Tool Handlers
@@ -495,6 +512,64 @@ async function getArtifactHandler(params: unknown): Promise<ToolResponse> {
   }
 }
 
+async function parseJobHistoryPageHandler(params: unknown): Promise<ToolResponse> {
+  try {
+    const input = parseJobHistoryPageSchema.parse(params);
+    const webClient = getGCSWebClient();
+
+    const runs = await webClient.getJobHistory(input.jobName, input.maxResults);
+
+    // Format the runs for better readability
+    const formattedRuns = runs.map(run => {
+      // Convert duration from seconds to readable format
+      const durationMinutes = Math.floor(run.duration / 60);
+      const durationSeconds = run.duration % 60;
+      const durationStr = durationMinutes > 0
+        ? `${durationMinutes}m ${durationSeconds}s`
+        : `${durationSeconds}s`;
+
+      return {
+        buildId: run.id,
+        result: run.result,
+        started: run.started,
+        duration: durationStr,
+        spyglassUrl: run.spyglassLink,
+      };
+    });
+
+    // Calculate summary statistics
+    const successCount = runs.filter(r => r.result === 'SUCCESS').length;
+    const failureCount = runs.filter(r => r.result === 'FAILURE').length;
+    const successRate = runs.length > 0 ? ((successCount / runs.length) * 100).toFixed(1) : '0.0';
+
+    const historyPageUrl = webClient.getJobHistoryUrl(input.jobName);
+
+    return {
+      content: [{
+        type: 'text',
+        text: JSON.stringify({
+          jobName: input.jobName,
+          source: 'Job History Page (embedded JavaScript)',
+          historyPageUrl,
+          totalRuns: runs.length,
+          summary: {
+            successCount,
+            failureCount,
+            successRate: `${successRate}%`,
+          },
+          runs: formattedRuns,
+        }, null, 2),
+      }],
+      success: true,
+    };
+  } catch (error) {
+    return {
+      error: error instanceof Error ? error.message : String(error),
+      success: false,
+    };
+  }
+}
+
 // Tool Definitions
 export const tools: MCPTool[] = [
   {
@@ -701,5 +776,24 @@ export const tools: MCPTool[] = [
       required: ['jobName', 'buildId', 'artifactPath'],
     },
     handler: getArtifactHandler,
+  },
+  {
+    name: 'prow_parse_job_history_page',
+    description: 'Parse job history page to get 20+ recent runs in one call. More reliable and faster than multiple API calls. Extracts embedded JavaScript with complete run data including build IDs, results, timestamps, and duration.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        jobName: {
+          type: 'string',
+          description: 'Name of the Prow job',
+        },
+        maxResults: {
+          type: 'number',
+          description: 'Maximum number of runs to return from job history page (default: 20)',
+        },
+      },
+      required: ['jobName'],
+    },
+    handler: parseJobHistoryPageHandler,
   },
 ];
